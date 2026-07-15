@@ -104,21 +104,7 @@ Results are written as JSON to `results/`; checkpoints (for robustness eval) to 
 
 ---
 
-## 7. Citation
-
-If you use this code, please cite the accompanying paper:
-
-```bibtex
-@article{peng2026mirror,
-  title   = {Mirror Symmetry as an Inductive Bias for Data-Efficient and Robust Image Classification},
-  author  = {Peng, Donghai and Yu, Huanjie},
-  journal = {Symmetry},
-  year    = {2026},
-  note    = {Special Issue: Symmetry in Computer Vision and Machine Learning}
-}
-```
-
-## 8. License
+## 7. License
 
 The code is released under the MIT License for research purposes. The CIFAR and CIFAR-10-C
 datasets retain their respective original licenses.
