@@ -65,9 +65,10 @@ def run():
     print(f"Device: {DEVICE}")
     # Compare robustness of models trained with different augmentations
     targets = [
-        ("none",     "cifar10_resnet50_none.pth"),
-        ("hflip",    "cifar10_resnet50_hflip.pth"),
-        ("standard", "cifar10_resnet50_standard.pth"),
+        ("none",            "cifar10_resnet50_none.pth"),
+        ("hflip",           "cifar10_resnet50_hflip.pth"),
+        ("standard_noflip", "cifar10_resnet50_standard_noflip.pth"),
+        ("standard",        "cifar10_resnet50_standard.pth"),
     ]
     models = {}
     for tag, fname in targets:
@@ -105,16 +106,20 @@ def run():
                 sev_accs.append(round(evaluate(model, x, y), 1))
             avg = round(sum(sev_accs) / 5, 1)
             results["corruptions"][corr][tag] = {"per_severity": sev_accs, "avg": avg}
-        b = results["corruptions"][corr].get("baseline", {}).get("avg", 0)
-        s = results["corruptions"][corr].get("SCR", {}).get("avg", 0)
-        print(f"  {corr:20s} baseline={b:5.1f}  SCR={s:5.1f}  delta={s-b:+.1f}")
+        row = "  " + corr.ljust(20) + "  " + "  ".join(
+            f"{t}={results['corruptions'][corr][t]['avg']:5.1f}" for t in models)
+        print(row)
 
-    # Summary
-    if "baseline" in models and "SCR" in models:
-        b_all = np.mean([results["corruptions"][c]["baseline"]["avg"] for c in CORRUPTIONS])
-        s_all = np.mean([results["corruptions"][c]["SCR"]["avg"] for c in CORRUPTIONS])
-        results["mean_corruption_acc"] = {"baseline": round(b_all, 1), "SCR": round(s_all, 1)}
-        print(f"\nMean corruption accuracy: baseline={b_all:.1f}%  SCR={s_all:.1f}%  delta={s_all-b_all:+.1f}")
+    # Summary: mean corruption accuracy for every loaded method
+    mean_acc = {}
+    for tag in models:
+        m = np.mean([results["corruptions"][c][tag]["avg"] for c in CORRUPTIONS])
+        mean_acc[tag] = round(m, 1)
+    results["mean_corruption_acc"] = mean_acc
+    print("\nMean corruption accuracy (over 19 corruptions x 5 severities):")
+    for tag in models:
+        gap = results["clean"][tag] - mean_acc[tag]
+        print(f"  {tag:18s} clean={results['clean'][tag]:5.1f}  mCA={mean_acc[tag]:5.1f}  gap={gap:5.1f}")
 
     out_path = f"{OUT}/exp4_robustness.json"
     with open(out_path, "w") as f:

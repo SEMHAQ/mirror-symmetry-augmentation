@@ -132,6 +132,18 @@ def get_train_transform(dataset: str, strategy: str, input_size: int = 224):
             norm,
         ])
 
+    # -- control: standard pipeline WITHOUT horizontal flip -------------------
+    # Isolates the marginal contribution of mirror symmetry from photometric
+    # (color jitter) and spatial (crop) augmentation. Critical control requested
+    # by review (Devil's Advocate C1).
+    if strategy == "standard_noflip":
+        return T.Compose([
+            T.RandomResizedCrop(input_size, scale=(0.8, 1.0)),
+            T.ColorJitter(brightness=0.2, contrast=0.2, saturation=0.2, hue=0.1),
+            T.ToTensor(),
+            norm,
+        ])
+
     # -- individual symmetry operations ---------------------------------------
     if strategy == "hflip":
         return T.Compose([
