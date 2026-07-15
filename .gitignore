@@ -1,0 +1,45 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+*.egg-info/
+
+# Datasets — download separately, never commit (multi-GB)
+data/
+cifar-10-batches-py/
+cifar-10-python*/
+cifar-100-python*/
+tiny-imagenet-200*/
+CIFAR-10-C/
+*.tar.gz
+*.zip
+archive.zip
+
+# Experiment outputs (regenerable by running the code)
+results/
+checkpoints/
+*.pth
+*.pt
+
+# Generated figures (regenerable via make_figures.py)
+paper/figures/
+*.pdf
+
+# LaTeX build artifacts
+*.aux
+*.log
+*.out
+*.bbl
+*.blg
+*.toc
+*.fls
+*.fdb_latexmk
+*.synctex.gz
+
+# OS / editors
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.swp
